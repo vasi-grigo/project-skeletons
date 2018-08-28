@@ -40,7 +40,7 @@ class api:
 
         # request finished
         self.ctx.metric_reqs_in_flight.sub({}, 1)
-
+        self.ctx.metric_reqs_latency.add({}, ms)
         return resp
 
     # catch all urls

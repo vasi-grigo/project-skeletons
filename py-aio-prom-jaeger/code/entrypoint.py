@@ -25,14 +25,14 @@ if __name__ == "__main__":
 
     # api server
     api = api(logger=logger,ctx=ctx)
-    logger.info("starting API on 0.0.0.0:{api_port}".format(**locals()))
+    logger.info("starting API on {h}:{api_port}".format(**locals()))
     runner = web.AppRunner(api.app)
     loop.run_until_complete(runner.setup())
     site = web.TCPSite(runner, h, api_port)
     loop.run_until_complete(site.start())
 
     # metrics server
-    logger.info("starting metrics server on 0.0.0.0:{metrics_port}".format(**locals()))
+    logger.info("starting metrics server on {h}:{metrics_port}".format(**locals()))
     m = metrics(host=h,port=metrics_port,logger=logger,ctx=ctx)
     loop.run_until_complete(m.start())
 

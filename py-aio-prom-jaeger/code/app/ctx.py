@@ -29,13 +29,13 @@ class ctx:
         )
         metrics.append(self.metric_reqs_duration)
 
-        self.latency_metric = Histogram(
+        self.metric_reqs_latency = Histogram(
             "request_latency_ms",
             "Request latency ms",
             const_labels=const_labels,
             buckets=[0.1, 0.5, 1.0, 5.0],
         )
-        metrics.append(self.latency_metric)
+        metrics.append(self.metric_reqs_latency)
         self.metrics = metrics
 
         self.cur_url = ''
