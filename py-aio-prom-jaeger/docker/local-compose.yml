@@ -1,0 +1,15 @@
+version: '3'
+networks:
+   common:
+services:
+  py-aio-prom-jaeger:
+    container_name: py-aio-prom-jaeger
+    image: py-aio-prom-jaeger:latest
+    tty: true # will not print to stdout without it
+    networks:
+    - common
+    ports:
+    - 8080
+    - 9100
+    volumes:
+    - ../code:/app
