@@ -22,3 +22,18 @@ services:
     - 9100
     volumes:
     - ../code:/app
+  siege:
+    container_name: siege
+    image: siege:4.0.4
+    networks:
+    - common
+    volumes:
+     - ./siege/siege.conf:/etc/siege/siege.conf
+     - ./siege/urls.txt:/etc/siege/urls.txt
+    command:
+    - "-R"
+    - /etc/siege/siege.conf
+    - "-f"
+    - /etc/siege/urls.txt
+    depends_on:
+    - py-aio-prom-jaeger

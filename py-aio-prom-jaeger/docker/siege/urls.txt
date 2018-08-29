@@ -1,0 +1,4 @@
+http://py-aio-prom-jaeger:8080/foo
+http://py-aio-prom-jaeger:8080/bar
+http://py-aio-prom-jaeger:8080/baz
+http://py-aio-prom-jaeger:8080/bat

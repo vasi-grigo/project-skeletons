@@ -12,9 +12,9 @@ class ctx:
 
         metrics = []
 
-        self.metric_reqs = Counter("requests_count", "Requests served by route", const_labels=const_labels)
+        self.metric_reqs = Counter("requests", "Requests served by route", const_labels=const_labels)
         metrics.append(self.metric_reqs)
-        self.metric_reqs_in_flight = Gauge("requests_in_flight_count", "Number of requests being served.", const_labels=const_labels)
+        self.metric_reqs_in_flight = Gauge("requests_in_flight", "Number of requests being served.", const_labels=const_labels)
         metrics.append(self.metric_reqs_in_flight)
         self.metric_ram = Gauge("memory_usage_bytes", "Memory usage in bytes.", const_labels=const_labels)
         metrics.append(self.metric_ram)

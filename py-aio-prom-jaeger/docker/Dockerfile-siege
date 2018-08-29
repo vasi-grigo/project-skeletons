@@ -1,0 +1,29 @@
+FROM ubuntu:18.04 as builder
+
+ENV SIEGE_VERSION=4.0.4
+
+RUN \
+    apt-get update \
+    && apt-get  install -yqq curl g++ make tar \
+    && curl -O http://download.joedog.org/siege/siege-${SIEGE_VERSION}.tar.gz \
+    && tar -xf siege-${SIEGE_VERSION}.tar.gz \
+    && cd siege-${SIEGE_VERSION} \
+    && ./configure \
+    && make install
+
+# DOES NOT WORK! MISSING HEADER FILE OR SEGFAULTS!
+# FROM alpine:3.8 as builder
+# MAINTAINER Fabian Sabau "fabian.sabau+docker@gmail.com"
+# ENV SIEGE_VERSION=3.1.4
+# RUN set -xe; apk add curl g++ make tar \
+#    && curl -O http://download.joedog.org/siege/siege-${SIEGE_VERSION}.tar.gz \
+#    && tar -xf siege-${SIEGE_VERSION}.tar.gz \
+#    && cd siege-${SIEGE_VERSION} \
+#    && ./configure \
+#    && make install
+
+FROM ubuntu:18.04
+COPY --from=builder /usr/local/bin/siege /usr/bin/siege
+COPY --from=builder /usr/local/bin/siege.config /usr/bin/siege.config
+ENTRYPOINT ["siege"]
+CMD ["--help"]
