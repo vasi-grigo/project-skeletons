@@ -2,8 +2,9 @@
 
 Python server that:
 - exposes a REST API using **aiohttp** that accepts requests for any routes
-- increments and tracks metrics (while waiting a random interval to  create some vibration)
-- exposes metrics using **prometheus_client**
+- exposes metrics using **prometheus_client**; metrics are updated each second
+(it takes some ~ 18 ms to update counters, hence updating is moved to a periodic task as prometheus 
+scrapes every 5secs at best)
 - uses multistage docker build so as not to bloat with g++ and others
 - uses **siege** to simulate load on http
 - integrated with **jaeger** for distributed tracing (WIP)
