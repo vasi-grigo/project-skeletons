@@ -1,0 +1,22 @@
+replicaCount: 1
+
+app:
+  image: py-aio-prom-jaeger:latest
+  pullPolicy: IfNotPresent
+
+siege:
+  image: siege:4.0.4
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  metrics_port: 9100
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+annotations:
+    prometheus.io/port: "9100"
+    prometheus.io/scrape: "true"
