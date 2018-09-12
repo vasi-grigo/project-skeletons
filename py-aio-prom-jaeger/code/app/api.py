@@ -1,4 +1,4 @@
-import time, logging, pprint, asyncio
+import time, logging, asyncio
 
 from app.ctx import ctx
 from random import randint
@@ -14,7 +14,7 @@ class api:
 
     @web.middleware
     async def middleware_time(self, app:web.Application, handler):
-        start = time.time_ns()
+        start = time.perf_counter()
         self.ctx.m_reqs_in_flight += 1
 
         # work
@@ -23,13 +23,11 @@ class api:
         # gauge
         self.ctx.m_reqs_in_flight -= 1
 
-        # counters
-        self.ctx.m_reqs_count[url] = self.ctx.m_reqs_count[url] + 1 if url in self.ctx.m_reqs_count else 1
-
         # histogram
-        ms = time.time_ns() - start
-        ms /= 1000000
-        self.ctx.m_reqs_duration.append(ms)
+        o = time.perf_counter() - start
+        o *= 1000
+        o = int(o)
+        self.ctx.m_reqs.append((o, url))
         return resp
 
     # catch all urls
