@@ -1,14 +1,14 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "py-aio-prom-jaeger.fullname" . }}
+  name: {{ template "py-aio-prom-jaeger.fullname" . }}-siege
   labels:
     app: {{ template "py-aio-prom-jaeger.name" . }}
     chart: {{ template "py-aio-prom-jaeger.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app: {{ template "py-aio-prom-jaeger.name" . }}
@@ -19,25 +19,23 @@ spec:
         app: {{ template "py-aio-prom-jaeger.name" . }}
         release: {{ .Release.Name }}
     spec:
+      volumes:
+      - name: siege-conf
+        configMap:
+          name: {{ template "py-aio-prom-jaeger.fullname" . }}-siege-config
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.app.image }}"
-          imagePullPolicy: {{ .Values.app.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-            - name: metrics
-              containerPort: 9100
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+        - name: {{ .Chart.Name }}-siege
+          image: "{{ .Values.siege.image }}"
+          imagePullPolicy: {{ .Values.siege.pullPolicy }}
+          command:
+          - "siege"
+          - "-R"
+          - /etc/siege/siege.conf
+          - "-f"
+          - /etc/siege/urls.txt
+          volumeMounts:
+          - name: siege-conf
+            mountPath: /etc/siege
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

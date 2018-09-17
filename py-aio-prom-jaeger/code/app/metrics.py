@@ -2,10 +2,9 @@
 import logging
 import asyncio
 import socket
-import uuid
 
 from app.ctx import ctx
-from aioprometheus import Gauge, Histogram, Service, formatsgit status
+from aioprometheus import Gauge, Histogram, Service, formats
 
 class metrics(object):
     def __init__(self, host:str, port:int, logger:logging.Manager, ctx:ctx):
@@ -17,8 +16,7 @@ class metrics(object):
 
         # Define some constant labels that need to be added to all metrics
         const_labels = {
-            "host": socket.gethostname(),
-            "app": f"{self.__class__.__name__}-{uuid.uuid4().hex}",
+            "pod": socket.gethostname() # corresponds to pod name
         }
 
         metrics = []

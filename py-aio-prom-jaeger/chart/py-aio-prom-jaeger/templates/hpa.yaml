@@ -1,0 +1,21 @@
+kind: HorizontalPodAutoscaler
+apiVersion: autoscaling/v2beta1
+metadata:
+  name: {{ template "py-aio-prom-jaeger.fullname" . }}
+  labels:
+    app: {{ template "py-aio-prom-jaeger.name" . }}
+    chart: {{ template "py-aio-prom-jaeger.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ template "py-aio-prom-jaeger.fullname" . }}
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Pods
+    pods:
+      metricName: avg_requests
+      targetAverageValue: 3000m
