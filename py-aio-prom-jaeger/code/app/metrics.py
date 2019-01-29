@@ -1,4 +1,3 @@
-
 import logging
 import asyncio
 import socket
@@ -7,11 +6,11 @@ from app.ctx import ctx
 from aioprometheus import Gauge, Histogram, Service, formats
 
 class metrics(object):
-    def __init__(self, host:str, port:int, logger:logging.Manager, ctx:ctx):
+    def __init__(self, host: str, port: int, ctx: ctx, logger=None):
         self.msvr = Service()
         self.host = host
         self.port = port
-        self.logger = logger
+        self.logger = logger or logging.getLogger(__name__)
         self.ctx = ctx
 
         # Define some constant labels that need to be added to all metrics

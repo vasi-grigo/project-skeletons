@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import asyncio
+import uvloop
+
 import logging
 import os
 from aiohttp import web
@@ -9,6 +11,7 @@ from app.metrics import metrics
 from app.ctx import ctx
 
 if __name__ == "__main__":
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
     loop = asyncio.get_event_loop()
     logging.basicConfig(level=logging.DEBUG)
     logging.getLogger("asyncio").setLevel(logging.ERROR)
@@ -24,8 +27,8 @@ if __name__ == "__main__":
     ctx = ctx()
 
     # api server
-    api = api(logger=logger,ctx=ctx)
-    logger.info("starting API on {h}:{api_port}".format(**locals()))
+    api = api(ctx, logger)
+    logger.info("starting HTTP API on {h}:{api_port}".format(**locals()))
     runner = web.AppRunner(api.app)
     loop.run_until_complete(runner.setup())
     site = web.TCPSite(runner, h, api_port)

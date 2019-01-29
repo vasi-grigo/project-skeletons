@@ -1,4 +1,6 @@
-import time, logging, asyncio
+import time
+import logging
+import asyncio
 
 from app.ctx import ctx
 from random import randint
@@ -6,10 +8,11 @@ from aiohttp import web
 
 routes = web.RouteTableDef()
 class api:
-    def __init__(self, logger:logging.Manager, ctx:ctx):
+    def __init__(self, ctx: ctx, logger=None):
         self.app = web.Application(middlewares=[self.middleware_time])
         self.app.add_routes(routes)
-        self.logger = logger
+
+        self.logger = logger or logging.getLogger(__name__)
         self.ctx = ctx
 
     @web.middleware

@@ -30,6 +30,7 @@ services:
     volumes:
      - ./siege/siege.conf:/etc/siege/siege.conf
      - ./siege/urls.txt:/etc/siege/urls.txt
+     - ./siege:/usr/local/var/log
     command:
     - "-R"
     - /etc/siege/siege.conf

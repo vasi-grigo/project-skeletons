@@ -1,8 +1,8 @@
 FROM python:3.7-alpine as builder
 
 RUN \
-    apk --update add linux-headers g++ \
-    && pip install aiohttp aioprometheus psutil
+    apk --update add linux-headers g++ make \
+    && pip install aiohttp aioprometheus psutil uvloop
 
 
 FROM python:3.7-alpine

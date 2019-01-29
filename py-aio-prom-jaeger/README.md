@@ -1,7 +1,7 @@
 # py-aio-prom-jaeger
 
 Application:
-- exposes a REST API using **aiohttp** that accepts requests for any routes
+- exposes an HTTP API using **aiohttp** that accepts requests for any routes
 - exposes metrics using **prometheus_client**; metrics are updated each second
 (it takes some ~ 18 ms to update counters, hence updating is moved to a periodic task as prometheus 
 scrapes every 5secs at best)
