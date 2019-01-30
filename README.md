@@ -6,7 +6,7 @@ Application:
 (it takes some ~ 18 ms to update counters, hence updating is moved to a periodic task as prometheus 
 scrapes every 5secs at best)
 - integrated with **jaeger** for distributed tracing (WIP)
-- loads in a json config and uses **jsonschema** to validate it (WIP)
+- loads in a json config and uses **jsonschema** to validate it
 - scaffolding for unit/integration tests
 
 Architecture:

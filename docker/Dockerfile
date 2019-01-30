@@ -2,7 +2,7 @@ FROM python:3.7-alpine as builder
 
 RUN \
     apk --update add linux-headers g++ make \
-    && pip install aiohttp aioprometheus psutil uvloop
+    && pip install aiohttp aioprometheus psutil uvloop ujson jsonschema
 
 
 FROM python:3.7-alpine

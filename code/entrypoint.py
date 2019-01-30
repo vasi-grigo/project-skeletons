@@ -4,9 +4,13 @@ import uvloop
 import os
 import asyncio
 import logging
+import ujson
+import jsonschema
+
 
 from aiohttp import web
 from app import pyskel
+from app.configschema import schema
 
 if __name__ == "__main__":
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -21,6 +25,19 @@ if __name__ == "__main__":
     # configuration
     api_port = os.environ['REST_PORT']
     metrics_port = os.environ['METRICS_PORT']
+    config = os.getenv("CONFIG")
+    if not config:
+        raise EnvironmentError("no config file specified")
+    if not os.path.exists(config):
+        raise EnvironmentError("config file does not exist")
+
+    logger.info("Reading configuration from {config}".format(**locals()))
+    try:
+        with open(config, "r") as cfg:
+            config = ujson.load(cfg)
+    except ValueError:
+        raise EnvironmentError("could not parse config file")
+    jsonschema.validate(config, schema)
 
     # context
     ctx = pyskel.Ctx()

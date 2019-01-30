@@ -22,12 +22,13 @@ services:
     - 9100
     volumes:
     - ../code:/opt/app
-    - ../config/config.json.dist:/opt/app/config.json
+    - ../config/config.json.dist:/opt/config.json
     - ../tests:/opt/tests
     environment:
     - TEST_SAFE=TheEmperorProtects # NEVER PUT THIS INTO AN ENVIRONMENT YOU CARE ABOUT
     - LOG_LEVEL=INFO
     - PYTHONPATH=/opt
+    - CONFIG=/opt/config.json
   siege:
     container_name: siege
     image: siege:4.0.4
