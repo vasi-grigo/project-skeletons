@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "pyskull"
+  labels:
+    app: {{ template "pyskull.name" . }}
+    chart: {{ template "pyskull.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: {{ .Values.service.metrics_port }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+  selector:
+    app: {{ template "pyskull.name" . }}
+    release: {{ .Release.Name }}

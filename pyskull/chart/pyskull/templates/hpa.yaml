@@ -1,0 +1,21 @@
+kind: HorizontalPodAutoscaler
+apiVersion: autoscaling/v2beta1
+metadata:
+  name: {{ template "pyskull.fullname" . }}
+  labels:
+    app: {{ template "pyskull.name" . }}
+    chart: {{ template "pyskull.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ template "pyskull.fullname" . }}
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Pods
+    pods:
+      metricName: avg_requests
+      targetAverageValue: 3000m

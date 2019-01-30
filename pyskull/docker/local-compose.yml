@@ -1,0 +1,46 @@
+version: '3'
+networks:
+   common:
+services:
+  prom:
+    image: quay.io/prometheus/prometheus:v2.3.2
+    volumes:
+     - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command: "--config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus"
+    networks:
+    - common
+    ports:
+     - 9090:9090
+  pyskel:
+    container_name: pyskull
+    image: pyskull:latest
+    tty: true # will not print to stdout without it
+    networks:
+    - common
+    ports:
+    - 8080
+    - 9100
+    volumes:
+    - ../code:/opt/app
+    - ../config/config.json.dist:/opt/app/config.json
+    - ../tests:/opt/tests
+    environment:
+    - TEST_SAFE=TheEmperorProtects # NEVER PUT THIS INTO AN ENVIRONMENT YOU CARE ABOUT
+    - LOG_LEVEL=INFO
+    - PYTHONPATH=/opt
+  siege:
+    container_name: siege
+    image: siege:4.0.4
+    networks:
+    - common
+    volumes:
+     - ./siege/siege.conf:/etc/siege/siege.conf
+     - ./siege/urls.txt:/etc/siege/urls.txt
+     - ./siege:/usr/local/var/log
+    command:
+    - "-R"
+    - /etc/siege/siege.conf
+    - "-f"
+    - /etc/siege/urls.txt
+    depends_on:
+    - pyskel

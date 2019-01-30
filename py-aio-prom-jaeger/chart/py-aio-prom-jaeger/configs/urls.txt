@@ -1,4 +1,0 @@
-http://py-aio-prom-jaeger/foo
-http://py-aio-prom-jaeger/bar
-http://py-aio-prom-jaeger/baz
-http://py-aio-prom-jaeger/bat
