@@ -14,6 +14,7 @@ class Ctx:
     def __init__(self):
         self.m_reqs_in_flight = 0
         self.m_reqs = []
+        self.tracer = None
 
 
 class Api:
@@ -25,12 +26,21 @@ class Api:
         self.ctx = ctx
 
     @web.middleware
-    async def middleware_time(self, app:web.Application, handler):
+    async def middleware_time(self, req: web.Request, handler):
         start = time.perf_counter()
         self.ctx.m_reqs_in_flight += 1
+        url = req.rel_url.path
 
         # work
-        resp, url = await handler(app)
+        t = self.ctx.tracer
+        if not t:
+            resp = await handler(self, req)
+        else:
+            # handle with trace
+            with t.start_span('{} {}'.format(req.method, req.rel_url)) as span:
+                span.log_kv({'event': 'in'})
+                resp = await handler(self, req)
+                span.log_kv({'event': 'out'})
 
         # gauge
         self.ctx.m_reqs_in_flight -= 1
@@ -40,13 +50,14 @@ class Api:
         o *= 1000
         o = int(o)
         self.ctx.m_reqs.append((o, url))
+
         return resp
 
     # catch all urls
     @routes.get('/{url:.*}')
-    async def handle(req:web.Request):
+    async def handle(self, req: web.Request):
         await asyncio.sleep(0.05 + randint(0,50) * 0.01)
-        return web.Response(text=req.rel_url.path), req.rel_url.path
+        return web.Response(text=req.rel_url.path)
 
     async def start(self):
         self.logger.info("API server started")
@@ -66,7 +77,7 @@ class MetricsServer(object):
 
         # Define some constant labels that need to be added to all metrics
         const_labels = {
-            "pod": socket.gethostname() # corresponds to pod name
+            "pod": socket.gethostname()  # corresponds to pod name
         }
 
         metrics = []
@@ -93,7 +104,7 @@ class MetricsServer(object):
         # histograms
         while len(self.ctx.m_reqs):
             p = self.ctx.m_reqs.pop()
-            self.metric_reqs.add({'api':p[1]}, p[0])
+            self.metric_reqs.add({'api': p[1]}, p[0])
 
         await asyncio.sleep(0.5)
         asyncio.get_event_loop().create_task(self.tick())

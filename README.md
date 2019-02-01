@@ -5,7 +5,7 @@ Application:
 - exposes metrics using **prometheus_client**; metrics are updated each second
 (it takes some ~ 18 ms to update counters, hence updating is moved to a periodic task as prometheus 
 scrapes every 5secs at best)
-- integrated with **jaeger** for distributed tracing (WIP)
+- integrated with **jaeger** for distributed tracing
 - loads in a json config and uses **jsonschema** to validate it
 - scaffolding for unit/integration tests
 

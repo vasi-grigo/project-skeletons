@@ -6,7 +6,8 @@ import asyncio
 import logging
 import ujson
 import jsonschema
-
+import jaeger_client
+import time
 
 from aiohttp import web
 from app import pyskel
@@ -19,6 +20,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=loglevel)
     logging.getLogger("asyncio").setLevel(logging.ERROR)
     logging.getLogger("aiohttp").setLevel(logging.ERROR)
+    logging.getLogger("jaeger_tracing").setLevel(logging.ERROR)
     logger = logging.getLogger(__name__)
     h = '0.0.0.0'
 
@@ -41,6 +43,19 @@ if __name__ == "__main__":
 
     # context
     ctx = pyskel.Ctx()
+
+    # tracer
+    jaeger = os.getenv("JAEGER")
+    if jaeger:
+        config = jaeger_client.Config(
+            config={
+                'sampler': {'type': 'const', 'param': 1},
+                'logging': True,
+            },
+            service_name='pyskel',
+            validate=True
+        )
+        ctx.tracer = config.initialize_tracer()
 
     # api server
     api = pyskel.Api(ctx, logger)
@@ -68,3 +83,8 @@ if __name__ == "__main__":
     ]
     loop.run_until_complete(asyncio.gather(*tasks))
     loop.close()
+
+    # allow for tracer to flush if enabled
+    if ctx.tracer:
+        time.sleep(2)
+        ctx.tracer.close()

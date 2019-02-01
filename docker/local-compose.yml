@@ -25,10 +25,13 @@ services:
     - ../config/config.json.dist:/opt/config.json
     - ../tests:/opt/tests
     environment:
-    - TEST_SAFE=TheEmperorProtects # NEVER PUT THIS INTO AN ENVIRONMENT YOU CARE ABOUT
+    - TEST_SAFE=TheEmperorProtects # NEVER PUT THIS INTO AN ENVIRONMENT YOU CARE ABOUT; allows tests to be run
     - LOG_LEVEL=INFO
-    - PYTHONPATH=/opt
-    - CONFIG=/opt/config.json
+    - PYTHONPATH=/opt # required tweak for tests
+    - CONFIG=/opt/config.json # config file to read from
+    - JAEGER=1  
+    - JAEGER_AGENT_HOST=jaeger
+    - JAEGER_AGENT_PORT=6831
   siege:
     container_name: siege
     image: siege:4.0.4
@@ -45,3 +48,19 @@ services:
     - /etc/siege/urls.txt
     depends_on:
     - pyskel
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    ports:
+    - 5775/udp
+    - 6831/udp
+    - 6832/udp
+    - 5778
+    - 16686:16686 # UI
+    - 14268
+    - 9411
+    networks:
+    - common
+    environment:
+    - jaeger-agent.host-port=jaeger:6831
+    - COLLECTOR_ZIPKIN_HTTP_PORT=9411
