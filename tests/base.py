@@ -1,5 +1,6 @@
-import unittest
+import aiounittest
 import os
+import asyncio
 
 check = os.getenv('TEST_SAFE')
 if check != 'TheEmperorProtects':
@@ -7,7 +8,7 @@ if check != 'TheEmperorProtects':
     exit()
 
 
-class BaseTest(unittest.TestCase):
+class BaseTest(aiounittest.AsyncTestCase):
 
     def helper(self):
         a = 1

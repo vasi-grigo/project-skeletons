@@ -2,16 +2,7 @@ version: '3'
 networks:
    common:
 services:
-  prom:
-    image: quay.io/prometheus/prometheus:v2.3.2
-    volumes:
-     - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    command: "--config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus"
-    networks:
-    - common
-    ports:
-     - 9090:9090
-  pyskel:
+  pyskull:
     container_name: pyskull
     image: pyskull:latest
     tty: true # will not print to stdout without it
@@ -20,35 +11,32 @@ services:
     ports:
     - 8080
     - 9100
+    - 50051:50051
     volumes:
     - ../code:/opt/app
     - ../config/config.json.dist:/opt/config.json
     - ../tests:/opt/tests
+    # - ../proto:/opt/proto # comment to use Dockerfile-generated proto files
     environment:
+    - HTTP_PORT=80 # empty to disable
+    - GRPC_PORT=50051 # empty to disable
+    - METRICS_PORT=9100 # empty to disable
+    - JAEGER_AGENT_PORT=6831 # comment or empty to disable
+    - JAEGER_AGENT_HOST=jaeger
     - TEST_SAFE=TheEmperorProtects # NEVER PUT THIS INTO AN ENVIRONMENT YOU CARE ABOUT; allows tests to be run
     - LOG_LEVEL=INFO
-    - PYTHONPATH=/opt # required tweak for tests
+    - PYTHONPATH=/opt:/opt/app:/opt/tests # required tweak for tests
     - CONFIG=/opt/config.json # config file to read from
-    - JAEGER=1  
-    - JAEGER_AGENT_HOST=jaeger
-    - JAEGER_AGENT_PORT=6831
-  siege:
-    container_name: siege
-    image: siege:4.0.4
+  prom: # optional
+    image: quay.io/prometheus/prometheus:v2.3.2
+    volumes:
+     - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command: "--config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus"
     networks:
     - common
-    volumes:
-     - ./siege/siege.conf:/etc/siege/siege.conf
-     - ./siege/urls.txt:/etc/siege/urls.txt
-     - ./siege:/usr/local/var/log
-    command:
-    - "-R"
-    - /etc/siege/siege.conf
-    - "-f"
-    - /etc/siege/urls.txt
-    depends_on:
-    - pyskel
-  jaeger:
+    ports:
+     - 9090:9090
+  jaeger: # optional
     image: jaegertracing/all-in-one:latest
     container_name: jaeger
     ports:

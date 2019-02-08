@@ -1,0 +1,4 @@
+http://pyskull:80/foo
+http://pyskull:80/bar
+http://pyskull:80/baz
+http://pyskull:80/bat
