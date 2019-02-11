@@ -13,11 +13,11 @@ import signal
 from pyskull.configschema import schema
 from pyskull.common import ctx, MetricsServer
 
-if __name__ == "__main__":
+
+def main():
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
     loop = asyncio.get_event_loop()
-    loglevel = os.getenv('LOG_LEVEL', logging.INFO)
-    logging.basicConfig(level=loglevel)
+    logging.basicConfig(level=os.getenv('LOG_LEVEL', logging.INFO))
     logging.getLogger("asyncio").setLevel(logging.ERROR)
     logging.getLogger("aiohttp").setLevel(logging.ERROR)
     logging.getLogger("jaeger_tracing").setLevel(logging.ERROR)
@@ -111,3 +111,7 @@ if __name__ == "__main__":
         if ctx.tracer:
             time.sleep(2)
             ctx.tracer.close()
+
+
+if __name__ == "__main__":
+    main()

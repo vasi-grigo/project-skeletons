@@ -27,5 +27,7 @@ class ClientTest(BaseTest):
                 self.assertEqual(200, resp.status)
                 self.assertEqual('Hello, world', await resp.text())
 
+
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(exit=False)
+    BaseTest.cleanup()

@@ -6,6 +6,7 @@ services:
     container_name: pyskull
     image: pyskull:latest
     tty: true # will not print to stdout without it
+    entrypoint: /bin/sh
     networks:
     - common
     ports:

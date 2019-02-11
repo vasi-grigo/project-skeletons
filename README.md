@@ -13,6 +13,7 @@ Basic python application skeleton with the common bells and whistles:
 ```bash
 # local
 docker/build.sh # build the image, rebuild protos and copy over
+vim docker/local-compose.yml # tweak as necessary; by default server won't be started
 docker-compose -f docker/local-compose.yml up # start stuff locally
 
 # run tests
