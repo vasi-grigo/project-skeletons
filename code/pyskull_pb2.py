@@ -19,21 +19,21 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='pyskull',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\rpyskull.proto\x12\x07pyskull\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x01 \x01(\t2C\n\x07Greeter\x12\x38\n\x08SayHello\x12\x15.pyskull.HelloRequest\x1a\x13.pyskull.HelloReply\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\rpyskull.proto\x12\x07pyskull\"\x1b\n\x0bHailRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"-\n\x0cHailResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x0c\n\x04\x63ode\x18\x02 \x01(\x05\x32@\n\x07Greeter\x12\x35\n\x04Hail\x12\x14.pyskull.HailRequest\x1a\x15.pyskull.HailResponse\"\x00\x62\x06proto3')
 )
 
 
 
 
-_HELLOREQUEST = _descriptor.Descriptor(
-  name='HelloRequest',
-  full_name='pyskull.HelloRequest',
+_HAILREQUEST = _descriptor.Descriptor(
+  name='HailRequest',
+  full_name='pyskull.HailRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='name', full_name='pyskull.HelloRequest.name', index=0,
+      name='name', full_name='pyskull.HailRequest.name', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -52,21 +52,28 @@ _HELLOREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=26,
-  serialized_end=54,
+  serialized_end=53,
 )
 
 
-_HELLOREPLY = _descriptor.Descriptor(
-  name='HelloReply',
-  full_name='pyskull.HelloReply',
+_HAILRESPONSE = _descriptor.Descriptor(
+  name='HailResponse',
+  full_name='pyskull.HailResponse',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='message', full_name='pyskull.HelloReply.message', index=0,
+      name='message', full_name='pyskull.HailResponse.message', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='code', full_name='pyskull.HailResponse.code', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -82,27 +89,27 @@ _HELLOREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=56,
-  serialized_end=85,
+  serialized_start=55,
+  serialized_end=100,
 )
 
-DESCRIPTOR.message_types_by_name['HelloRequest'] = _HELLOREQUEST
-DESCRIPTOR.message_types_by_name['HelloReply'] = _HELLOREPLY
+DESCRIPTOR.message_types_by_name['HailRequest'] = _HAILREQUEST
+DESCRIPTOR.message_types_by_name['HailResponse'] = _HAILRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
-HelloRequest = _reflection.GeneratedProtocolMessageType('HelloRequest', (_message.Message,), dict(
-  DESCRIPTOR = _HELLOREQUEST,
+HailRequest = _reflection.GeneratedProtocolMessageType('HailRequest', (_message.Message,), dict(
+  DESCRIPTOR = _HAILREQUEST,
   __module__ = 'pyskull_pb2'
-  # @@protoc_insertion_point(class_scope:pyskull.HelloRequest)
+  # @@protoc_insertion_point(class_scope:pyskull.HailRequest)
   ))
-_sym_db.RegisterMessage(HelloRequest)
+_sym_db.RegisterMessage(HailRequest)
 
-HelloReply = _reflection.GeneratedProtocolMessageType('HelloReply', (_message.Message,), dict(
-  DESCRIPTOR = _HELLOREPLY,
+HailResponse = _reflection.GeneratedProtocolMessageType('HailResponse', (_message.Message,), dict(
+  DESCRIPTOR = _HAILRESPONSE,
   __module__ = 'pyskull_pb2'
-  # @@protoc_insertion_point(class_scope:pyskull.HelloReply)
+  # @@protoc_insertion_point(class_scope:pyskull.HailResponse)
   ))
-_sym_db.RegisterMessage(HelloReply)
+_sym_db.RegisterMessage(HailResponse)
 
 
 
@@ -112,16 +119,16 @@ _GREETER = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=87,
-  serialized_end=154,
+  serialized_start=102,
+  serialized_end=166,
   methods=[
   _descriptor.MethodDescriptor(
-    name='SayHello',
-    full_name='pyskull.Greeter.SayHello',
+    name='Hail',
+    full_name='pyskull.Greeter.Hail',
     index=0,
     containing_service=None,
-    input_type=_HELLOREQUEST,
-    output_type=_HELLOREPLY,
+    input_type=_HAILREQUEST,
+    output_type=_HAILRESPONSE,
     serialized_options=None,
   ),
 ])

@@ -22,6 +22,7 @@ def main():
     logging.getLogger("aiohttp").setLevel(logging.ERROR)
     logging.getLogger("jaeger_tracing").setLevel(logging.ERROR)
     logger = logging.getLogger(__name__)
+    ctx.logger = logger
     h = '0.0.0.0'
 
     # configuration
@@ -56,9 +57,9 @@ def main():
     runner = None
     api_port = os.environ['HTTP_PORT']
     if api_port:
-        from pyskull.http import routes
+        from pyskull.http import routes, middlewares
         from aiohttp import web
-        app = web.Application()
+        app = web.Application(middlewares=middlewares)
         app.add_routes(routes)
         runner = web.AppRunner(app)
         loop.run_until_complete(runner.setup())
@@ -72,7 +73,7 @@ def main():
     if gport:
         from pyskull import grpc as g
         from grpclib.server import Server
-        gapi = Server([g.Greeter(ctx)], loop=loop)
+        gapi = Server([g.Greeter()], loop=loop)
         loop.run_until_complete(gapi.start('0.0.0.0', 50051))
         logger.info("gRPC started on {h}:{gport}".format(**locals()))
 

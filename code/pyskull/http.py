@@ -1,19 +1,49 @@
-import asyncio
+import time
 
-from pyskull.common import api, PROFILE_HTTP
-from random import randint
 from aiohttp import web
 from pyskull.common import ctx
 
 routes = web.RouteTableDef()
 
 
-@routes.get('/hello/{name}')
-@api('/hello', PROFILE_HTTP)
-async def hello(req: web.Request):
-    if ctx.tracer_current_span:
-        with ctx.tracer.start_span('blah', child_of=ctx.tracer_current_span) as child_span:
-            ctx.tracer_current_span.log_kv({'from_blah': 'fooblah'})
-            child_span.log_kv({'blah': 'blah blah'})
-    await asyncio.sleep(0.05 + randint(0, 50) * 0.01)
-    return web.Response(text="Hello, {}".format(req.match_info['name']))
+@web.middleware
+async def middleware(request, handler):
+    flight, reqs, failed = ctx.profile_http
+    api = str(request.rel_url)
+    meta = {'api': api, 'method': str(request.method)}
+    flight.inc(meta)
+    start = time.perf_counter()
+
+    # work
+    try:
+        if not ctx.tracer:
+            resp = await handler(request)
+        else:
+            with ctx.tracer.start_span('{}'.format(api)) as span:
+                span.set_tag('protocol', 'http')
+                span.log_kv({'event': 'in'})
+                ctx.tracer_current_span = span
+                resp = await handler(request)
+                span.log_kv({'event': 'out'})
+    except Exception as e:
+        # logging handled by aiohttp
+        failed.inc(meta)
+        raise e
+    finally:
+        flight.dec(meta)
+
+    o = time.perf_counter() - start
+    o *= 1000
+    o = int(o)
+    reqs.observe(meta, o)
+    return resp
+
+
+@routes.get('/hail/{name}')
+async def hail(req: web.Request):
+    name = req.match_info.get('name')
+    if not name or name not in ['emperor', 'odin', 'shiva', 'zeus', 'ra']:
+        raise web.HTTPBadRequest(text='Will not hail!')
+    return web.Response(text="Hail, {}!".format(name))
+
+middlewares = [middleware]

@@ -9,4 +9,5 @@ cchardet==2.1.4
 aiodns==1.2.0
 grpcio==1.18
 grpclib>=0.2.2rc2
+mock
 aiounittest

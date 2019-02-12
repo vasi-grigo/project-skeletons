@@ -12,16 +12,16 @@ import pyskull_pb2
 class GreeterBase(abc.ABC):
 
     @abc.abstractmethod
-    async def SayHello(self, stream):
+    async def Hail(self, stream):
         pass
 
     def __mapping__(self):
         return {
-            '/pyskull.Greeter/SayHello': grpclib.const.Handler(
-                self.SayHello,
+            '/pyskull.Greeter/Hail': grpclib.const.Handler(
+                self.Hail,
                 grpclib.const.Cardinality.UNARY_UNARY,
-                pyskull_pb2.HelloRequest,
-                pyskull_pb2.HelloReply,
+                pyskull_pb2.HailRequest,
+                pyskull_pb2.HailResponse,
             ),
         }
 
@@ -29,9 +29,9 @@ class GreeterBase(abc.ABC):
 class GreeterStub:
 
     def __init__(self, channel: grpclib.client.Channel) -> None:
-        self.SayHello = grpclib.client.UnaryUnaryMethod(
+        self.Hail = grpclib.client.UnaryUnaryMethod(
             channel,
-            '/pyskull.Greeter/SayHello',
-            pyskull_pb2.HelloRequest,
-            pyskull_pb2.HelloReply,
+            '/pyskull.Greeter/Hail',
+            pyskull_pb2.HailRequest,
+            pyskull_pb2.HailResponse,
         )
