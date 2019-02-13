@@ -10,7 +10,7 @@ services:
     networks:
     - common
     ports:
-    - 8080
+    - 8080:80
     - 9100
     - 50051:50051
     volumes:
