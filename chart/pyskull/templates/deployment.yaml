@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.app.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "pyskull.name" . }}
@@ -23,32 +23,31 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.app.image }}"
           imagePullPolicy: {{ .Values.app.pullPolicy }}
+{{- with .Values.app.imagePullSecrets }}
+          imagePullSecrets:
+{{- end }}
+{{ toYaml .Values.imagePullSecrets | indent 12 }}
           ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-            - name: metrics
-              containerPort: 9100
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
+{{ toYaml .Values.app.ports | indent 12 }}
+{{- with .Values.app.readinessProbe }}
           readinessProbe:
-            httpGet:
-              path: /
-              port: http
+{{ toYaml . | indent 12 }}
+{{- end }}
+{{- with .Values.app.livenessProbe }}
+          livenessProbe:
+{{ toYaml . | indent 12 }}
+{{- end }}
           resources:
-{{ toYaml .Values.resources | indent 12 }}
-    {{- with .Values.nodeSelector }}
+{{ toYaml .Values.app.resources | indent 12 }}
+{{- with .Values.app.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.affinity }}
+    {{- with .Values.app.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.tolerations }}
+    {{- with .Values.app.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}

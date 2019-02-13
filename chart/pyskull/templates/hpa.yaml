@@ -1,3 +1,4 @@
+{{ if .Values.hpa.enabled }}
 kind: HorizontalPodAutoscaler
 apiVersion: autoscaling/v2beta1
 metadata:
@@ -12,10 +13,10 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ template "pyskull.fullname" . }}
-  minReplicas: 1
-  maxReplicas: 10
+  minReplicas: {{ .Values.hpa.min }}
+  maxReplicas: {{ .Values.hpa.max }}
+{{- with .Values.hpa.metrics}}
   metrics:
-  - type: Pods
-    pods:
-      metricName: avg_requests
-      targetAverageValue: 3000m
+{{ toYaml . | indent 4 }}
+{{- end }}
+{{- end }}

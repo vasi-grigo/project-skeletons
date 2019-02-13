@@ -1,4 +1,0 @@
-http://pyskull/foo
-http://pyskull/bar
-http://pyskull/baz
-http://pyskull/bat
